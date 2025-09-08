@@ -29,7 +29,7 @@ const app = express();
 app.use(cors({
   origin: [
     'http://localhost:3000',
-    'https://organic-food-frontend-two.vercel.app' // removed trailing slash
+    'organic-food-frontend-es4uyuiu2-panneers-projects-0411502a.vercel.app' // removed trailing slash
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
