@@ -27,7 +27,7 @@ const app = express();
 
 // CORS configuration
 app.use(cors({
-  origin: ['http://localhost:3000', "https://organic-deliver-gzj6.vercel.app/"],
+  origin: ['http://localhost:3000', "https://organic-food-frontend-two.vercel.app/"],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
