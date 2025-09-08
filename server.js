@@ -3,49 +3,45 @@ import dotenv from 'dotenv';
 import connectDB from './config/db.js';
 import cors from 'cors';
 
-// Load environment variables FIRST
+// Load env
 dotenv.config();
 
-// ✅ Check if required environment variables are set
+// Check env variables
 const requiredEnvVars = ['MONGODB_URI', 'JWT_SECRET'];
-const missingEnvVars = requiredEnvVars.filter((varName) => !process.env[varName]);
-
+const missingEnvVars = requiredEnvVars.filter(v => !process.env[v]);
 if (missingEnvVars.length > 0) {
   console.error('❌ Missing required environment variables:', missingEnvVars);
-  console.error('Please check your .env file');
   process.exit(1);
 }
-
 console.log('✅ Environment variables loaded successfully');
 
-// Routes
+// Import routes
 import userRoutes from './routes/userRoutes.js';
 import foodRoutes from './routes/foodRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
 
 const app = express();
 
-// ✅ Correct CORS configuration
-app.use(
-  cors({
-    origin: [
-      'http://localhost:3000',
-      'https://organic-food-frontend-two.vercel.app' // ✅ must include https://, no trailing slash
-    ],
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
-  })
-);
+// ✅ Fixed CORS configuration
+app.use(cors({
+  origin: [
+    'http://localhost:3000',
+    'https://organic-food-frontend-es4uyuiu2-panneers-projects-0411502a.vercel.app',
+    'https://organic-food-frontend-two.vercel.app' // add your other frontend URL too
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 app.use(express.json());
 
-// API Routes
+// API routes
 app.use('/api/users', userRoutes);
 app.use('/api/foods', foodRoutes);
 app.use('/api/orders', orderRoutes);
 
-// Health check endpoint
+// Health check
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'OK',
@@ -55,40 +51,11 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Test endpoint
-app.get('/api/test', (req, res) => {
-  res.json({ message: 'Test endpoint working!' });
-});
-
-// Test database connection endpoint
-app.get('/api/test-db', async (req, res) => {
-  try {
-    const mongoose = await import('mongoose');
-    const connectionState = mongoose.connection.readyState;
-
-    const states = {
-      0: 'disconnected',
-      1: 'connected',
-      2: 'connecting',
-      3: 'disconnecting'
-    };
-
-    res.json({
-      database: {
-        status: states[connectionState] || 'unknown',
-        readyState: connectionState
-      }
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
 app.get('/', (req, res) => {
   res.send('Organic Food Delivery API is running...');
 });
 
-// Error handling middleware
+// Error handler
 app.use((err, req, res, next) => {
   console.error('Error:', err.message);
   res.status(500).json({
@@ -102,17 +69,13 @@ app.use('*', (req, res) => {
   res.status(404).json({ error: 'Endpoint not found' });
 });
 
+// Start server
 const PORT = process.env.PORT || 5000;
-
-// ✅ Connect to MongoDB first, then start the server
 const startServer = async () => {
   try {
     await connectDB();
-
     app.listen(PORT, () => {
       console.log(`🚀 Server running on port ${PORT}`);
-      console.log(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
-      console.log(`🔗 MongoDB URI: ${process.env.MONGODB_URI ? 'Set' : 'Not set'}`);
       console.log(`🌐 API Health: http://localhost:${PORT}/api/health`);
     });
   } catch (error) {
@@ -120,5 +83,5 @@ const startServer = async () => {
     process.exit(1);
   }
 };
-
 startServer();
+
