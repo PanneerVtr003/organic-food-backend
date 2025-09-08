@@ -25,9 +25,12 @@ import orderRoutes from './routes/orderRoutes.js';
 
 const app = express();
 
-// CORS configuration
+// ✅ CORS configuration
 app.use(cors({
-  origin: ['http://localhost:3000', "https://organic-food-frontend-two.vercel.app/"],
+  origin: [
+    'http://localhost:3000',
+    'https://organic-food-frontend-two.vercel.app' // removed trailing slash
+  ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
