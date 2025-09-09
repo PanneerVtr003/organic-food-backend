@@ -1,7 +1,5 @@
-// models/Order.js
 import mongoose from "mongoose";
 
-// Schema for individual order items
 const orderItemSchema = new mongoose.Schema(
   {
     food: {
@@ -13,10 +11,9 @@ const orderItemSchema = new mongoose.Schema(
     qty: { type: Number, required: true },
     price: { type: Number, required: true },
   },
-  { _id: false } // prevent automatic _id for subdocuments
+  { _id: false }
 );
 
-// Main order schema
 const orderSchema = new mongoose.Schema(
   {
     user: {
@@ -25,6 +22,7 @@ const orderSchema = new mongoose.Schema(
       required: true,
     },
     orderItems: [orderItemSchema],
+    // CHANGE: Use shippingAddress instead of deliveryInfo
     shippingAddress: {
       street: { type: String, required: true },
       city: { type: String, required: true },
@@ -39,9 +37,8 @@ const orderSchema = new mongoose.Schema(
     isPaid: { type: Boolean, default: false },
     paidAt: { type: Date },
   },
-  { timestamps: true } // automatically add createdAt and updatedAt
+  { timestamps: true }
 );
 
-// Create and export the model
 const Order = mongoose.model("Order", orderSchema);
 export default Order;

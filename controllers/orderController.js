@@ -7,7 +7,7 @@ export const addOrderItems = async (req, res) => {
   try {
     const {
       orderItems,
-      shippingAddress,
+      shippingAddress, // Change from deliveryInfo to shippingAddress
       paymentMethod,
       itemsPrice,
       taxPrice,
@@ -20,9 +20,14 @@ export const addOrderItems = async (req, res) => {
     }
 
     const order = new Order({
-      orderItems,
-      user: req.user?._id || null, // safe for testing
-      shippingAddress,
+      orderItems: orderItems.map(item => ({
+        food: item.food,
+        name: item.name,
+        qty: item.qty,
+        price: item.price
+      })),
+      user: req.user._id,
+      shippingAddress, // Change from deliveryInfo to shippingAddress
       paymentMethod,
       itemsPrice,
       taxPrice,
@@ -34,6 +39,9 @@ export const addOrderItems = async (req, res) => {
     res.status(201).json(createdOrder);
   } catch (error) {
     console.error("Order creation failed:", error.message);
-    res.status(500).json({ message: "Server Error", error: error.message });
+    res.status(500).json({ 
+      message: "Server Error", 
+      error: error.message,
+    });
   }
 };
