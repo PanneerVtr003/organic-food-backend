@@ -9,35 +9,72 @@ const orderItemSchema = new mongoose.Schema(
     },
     name: { type: String, required: true },
     qty: { type: Number, required: true },
-    price: { type: Number, required: true },
+    price: { type: Number, required: true }
   },
   { _id: false }
 );
 
 const orderSchema = new mongoose.Schema(
   {
+    orderItems: [orderItemSchema],
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
-    orderItems: [orderItemSchema],
-    // CHANGE: Use shippingAddress instead of deliveryInfo
     shippingAddress: {
+      name: { type: String, required: true },
+      email: { type: String, required: true },
+      phone: { type: String, required: true },
       street: { type: String, required: true },
       city: { type: String, required: true },
       state: { type: String, required: true },
       zipCode: { type: String, required: true },
     },
-    paymentMethod: { type: String, required: true },
-    itemsPrice: { type: Number, required: true, default: 0.0 },
-    taxPrice: { type: Number, required: true, default: 0.0 },
-    shippingPrice: { type: Number, required: true, default: 0.0 },
-    totalPrice: { type: Number, required: true, default: 0.0 },
-    isPaid: { type: Boolean, default: false },
-    paidAt: { type: Date },
+    paymentMethod: {
+      type: String,
+      required: true,
+    },
+    itemsPrice: {
+      type: Number,
+      required: true,
+    },
+    taxPrice: {
+      type: Number,
+      required: true,
+      default: 0.0,
+    },
+    shippingPrice: {
+      type: Number,
+      required: true,
+      default: 0.0,
+    },
+    totalPrice: {
+      type: Number,
+      required: true,
+    },
+    sendEmailConfirmation: {
+      type: Boolean,
+      default: false,
+    },
+    isPaid: {
+      type: Boolean,
+      default: false,
+    },
+    paidAt: {
+      type: Date,
+    },
+    isDelivered: {
+      type: Boolean,
+      default: false,
+    },
+    deliveredAt: {
+      type: Date,
+    },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+  }
 );
 
 const Order = mongoose.model("Order", orderSchema);

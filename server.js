@@ -1,9 +1,9 @@
+// server.js
 import express from "express";
 import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import cors from "cors";
-import { OAuth2Client } from 'google-auth-library';
-// In your server.js file, change the import to:
+import { OAuth2Client } from "google-auth-library";
 
 // Load environment variables
 dotenv.config();
@@ -30,24 +30,20 @@ import User from "./models/User.js";
 
 const app = express();
 
-// ✅ Dynamic CORS configuration
+// ✅ Define allowed origins
 const allowedOrigins = [
   "http://localhost:3000",
-  "http://localhost:3001", // frontend dev
-  "https://organic-food-frontend-es4uyuiu2-panneers-projects-0411502a.vercel.app",
   "https://organic-food-frontend-two.vercel.app",
 ];
 
+// ✅ Single clean CORS config
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (e.g., Postman, curl)
+      // Allow requests with no origin (Postman, curl)
       if (!origin) return callback(null, true);
 
-      if (
-        allowedOrigins.includes(origin) ||
-        origin.startsWith("http://localhost")
-      ) {
+      if (allowedOrigins.includes(origin)) {
         return callback(null, true);
       }
 
@@ -66,7 +62,7 @@ app.use(express.json());
 app.post("/api/auth/google", async (req, res) => {
   try {
     const { token } = req.body;
-    
+
     if (!token) {
       return res.status(400).json({ message: "Google token is required" });
     }
@@ -95,8 +91,8 @@ app.post("/api/auth/google", async (req, res) => {
         name,
         email,
         avatar: picture,
-        authMethod: 'google',
-        isVerified: true
+        authMethod: "google",
+        isVerified: true,
       });
     }
 
@@ -162,7 +158,9 @@ const startServer = async () => {
     app.listen(PORT, () => {
       console.log(`🚀 Server running on port ${PORT}`);
       console.log(`🌐 API Health: http://localhost:${PORT}/api/health`);
-      console.log(`✅ Google Auth configured with Client ID: ${process.env.GOOGLE_CLIENT_ID}`);
+      console.log(
+        `✅ Google Auth configured with Client ID: ${process.env.GOOGLE_CLIENT_ID}`
+      );
     });
   } catch (error) {
     console.error("❌ Failed to start server:", error.message);
